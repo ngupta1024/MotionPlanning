@@ -97,10 +97,8 @@ Generator::coordinateList Generator::findPath(double* map, int robotposeX, int r
     Vec2i goal_pos  = {goalposeX,goalposeY};
     NodeSetFwd openSet;
     UnorderedSet closedSet;
-    std::unordered_map<std::string, int> openCoordSet;
     Node *current = nullptr;
     openSet.insert(new Node(start_pos));
-
 
     while(!openSet.empty())
     {
@@ -124,21 +122,21 @@ Generator::coordinateList Generator::findPath(double* map, int robotposeX, int r
             //each step is equal to cost of 1
             int cost_to_go=((int)map[GETMAPINDEX(newCoordinates.x,newCoordinates.y,worldSize.x,worldSize.y)]>2000)? 50:1;
             int tentative_g=current->G+cost_to_go;
-            Node *successor; //=findNodeOnList(openSet,newCoordinates);
-            successor=new Node(newCoordinates,current);
+            Node *successor=findNodeOnList(openSet,newCoordinates);
+            
             //if successor is not in openlist, then add it with tentative g value
-            if (openCoordSet.find(std::to_string(successor->coordinates.x)+","+std::to_string(successor->coordinates.y))==openCoordSet.end())
+            if (successor==nullptr)
             {
+                successor=new Node(newCoordinates,current);
                 successor->G = tentative_g;
                 //check if successor is already expanded by dijkstra
                 successor->H = weight_fwd*eightConnectedHeuristic(map, newCoordinates.x, newCoordinates.y, goalposeX,goalposeY);
                 openSet.insert(successor);
-                openCoordSet.insert({std::to_string(successor->coordinates.x)+","+std::to_string(successor->coordinates.y),successor->G});
             }
             //if successor is in openlist, then see and update g value if needed
             else if(tentative_g<successor->G)
             {
-                // successor->parent=current;
+                successor->parent=current;
                 successor->G=tentative_g;
             }
         }

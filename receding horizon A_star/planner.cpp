@@ -67,34 +67,34 @@ static void planner(
     Generator generator(x_size, y_size, collision_thresh);
     
     //only first time
-    // if (curr_time==prev_time_stamp){
+    if (curr_time==prev_time_stamp){
         path = generator.findPath( map,robotposeX, robotposeY, goalposeX, goalposeY);
-    //     path_gen=1;
-    //     steps=0;
-    // }
-    // else{
-    //     if ((curr_time-prev_time_stamp)>path.size()/2 || path.size()<=2+steps)//look ahead and replanning dynamically changes
-    //     {
-    //         look_ahead=steps;
-    //         if(curr_time+look_ahead<target_steps)
-    //         {
-    //             goalposeX= (int) target_traj[curr_time+look_ahead];
-    //             goalposeY= (int) target_traj[curr_time+look_ahead+target_steps];
-    //         }
-    //         else
-    //         {
-    //             goalposeX = (int) target_traj[target_steps-1];
-    //             goalposeY = (int) target_traj[target_steps-1+target_steps];
-    //         }
-    //         path = generator.findPath( map,robotposeX, robotposeY, goalposeX, goalposeY);
-    //         prev_time_stamp=curr_time;
-    //         steps=0;
-    //     }
-    //     else
-    //     {
-    //         steps++;
-    //     }
-    // }
+        path_gen=1;
+        steps=0;
+    }
+    else{
+        if ((curr_time-prev_time_stamp)>path.size()/2 || path.size()<=2+steps)//look ahead and replanning dynamically changes
+        {
+            look_ahead=steps;
+            if(curr_time+look_ahead<target_steps)
+            {
+                goalposeX= (int) target_traj[curr_time+look_ahead];
+                goalposeY= (int) target_traj[curr_time+look_ahead+target_steps];
+            }
+            else
+            {
+                goalposeX = (int) target_traj[target_steps-1];
+                goalposeY = (int) target_traj[target_steps-1+target_steps];
+            }
+            path = generator.findPath( map,robotposeX, robotposeY, goalposeX, goalposeY);
+            prev_time_stamp=curr_time;
+            steps=0;
+        }
+        else
+        {
+            steps++;
+        }
+    }
     
     
     Generator::Vec2i next_state;
